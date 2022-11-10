@@ -3,9 +3,9 @@ import { galleryItems } from './gallery-items.js';
 const mainDivForGalleryItems = document.querySelector(".gallery");
 const imagesMarkup = createItemsMarkup(galleryItems);
 function createItemsMarkup(item) {
-    return galleryItems
-        .map(({ preview, original, description }) => {
-            return `<div class="gallery__item">
+  return galleryItems
+    .map(({ preview, original, description }) => {
+      return `<div class="gallery__item">
       <a class="gallery__link" href="${original.value}">
         <img
           class="gallery__image"
@@ -15,16 +15,25 @@ function createItemsMarkup(item) {
         />
       </a>
     </div>`;
-        })
-        .join("");
+    })
+    .join("");
 }
-function onClick(e) {
-    e.preventDefault();
-    if (e.target.classList.contains(".gallery")) return;
-    const src = e.target.dataset.source;
-    basicLightbox.create(`
+const onClick = e => {
+  e.preventDefault();
+  if (e.target.classList.contains(".gallery")) return;
+  const src = e.target.dataset.source;
+  const instance = basicLightbox.create(`
 		<img src="${src}">
-	`).show();
+	`, {
+    onShow: () => window.addEventListener("keydown", onExitEsc),
+    onClose: () => window.removeEventListener("keydown", onExitEsc)
+  });
+  const onExitEsc = e => {
+    if (e.code === "Escape") {
+      instance.close();
+    }
+  }
+  instance.show();
 }
 
 mainDivForGalleryItems.insertAdjacentHTML("beforeend", imagesMarkup);
