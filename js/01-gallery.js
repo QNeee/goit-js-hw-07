@@ -20,8 +20,8 @@ function createItemsMarkup(item) {
 }
 const onClick = e => {
   e.preventDefault();
-  if (e.target.classList.contains(".gallery")) return;
   const src = e.target.dataset.source;
+  if (!src) return;
   const instance = basicLightbox.create(`
 		<img src="${src}">
 	`, {
